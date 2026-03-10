@@ -47,8 +47,8 @@ jobs:
                   push: true
                   context: ./backend
                   tags: |
-                      ${{ secrets.ACR_REGISTRY_URL }}/infisical:latest
-                      ${{ secrets.ACR_REGISTRY_URL }}/infisical:${{ steps.commit.outputs.short }}
-                      ${{ secrets.ACR_REGISTRY_URL }}/infisical:${{ steps.extract_version.outputs.version }}
+                      ${{ vars.AZURE_REGISTRY_NAME }}/infisical:latest
+                      ${{ vars.AZURE_REGISTRY_NAME }}/infisical:${{ steps.commit.outputs.short }}
+                      ${{ vars.AZURE_REGISTRY_NAME }}/infisical:${{ steps.extract_version.outputs.version }}
                   platforms: linux/amd64,linux/arm64
                   file: backend/Dockerfile
