@@ -1,0 +1,10 @@
+name: Build and deploy Docker image to Azure Container Registry
+on:
+  workflow_dispatch:
+
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo
+        run: echo "Hello, World!"
