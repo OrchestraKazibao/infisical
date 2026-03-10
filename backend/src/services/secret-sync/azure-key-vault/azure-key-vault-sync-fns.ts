@@ -229,7 +229,8 @@ export const azureKeyVaultSyncFactory = ({ kmsService, appConnectionDAL }: TAzur
       const firstError = failedSets[0].reason;
       throw new SecretSyncError({
         error: firstError,
-        secretKey: firstError instanceof SecretSyncError ? firstError.secretKey : undefined
+        secretKey: firstError instanceof SecretSyncError ? firstError.secretKey : undefined,
+        message: `Failed to set ${failedSets.length} secret(s) in Azure Key Vault`
       });
     }
 
@@ -263,7 +264,8 @@ export const azureKeyVaultSyncFactory = ({ kmsService, appConnectionDAL }: TAzur
 
     if (failedDeletes.length > 0) {
       throw new SecretSyncError({
-        error: failedDeletes[0].reason
+        error: failedDeletes[0].reason,
+        message: `Failed to delete ${failedDeletes.length} secret(s) from Azure Key Vault`
       });
     }
   };
@@ -303,7 +305,8 @@ export const azureKeyVaultSyncFactory = ({ kmsService, appConnectionDAL }: TAzur
 
     if (failedRemoves.length > 0) {
       throw new SecretSyncError({
-        error: failedRemoves[0].reason
+        error: failedRemoves[0].reason,
+        message: `Failed to remove ${failedRemoves.length} secret(s) from Azure Key Vault`
       });
     }
   };
