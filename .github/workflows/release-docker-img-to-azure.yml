@@ -1,10 +1,44 @@
 name: Build and deploy Docker image to Azure Container Registry
+
 on:
-  workflow_dispatch:
+    workflow_dispatch:
+        inputs:
+            environnement:
+                description: "GitHub environment containing ACR secrets"
+                required: true
+                type: environment
+
+permissions:
+    contents: read
 
 jobs:
-  echo:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Echo
-        run: echo "Hello, World!"
+    build-and-push-to-acr:
+        name: Build and push image to Azure Container Registry
+        runs-on: ubuntu-latest
+        environment: ${{ inputs.environnement }}
+        steps:
+            - name: Extract version from tag
+              id: extract_version
+              run: |
+                echo "version=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+            - id: set-context
+              uses: OrchestraKazibao/actions-github/init-context@main
+              with:
+                environnement: ${{ inputs.environnement }}
+                clientId: ${{ vars.AZURE_CLIENT_ID }}
+                clientSecret: ${{ secrets.AZURE_CLIENT_SECRET }}
+                subscriptionId: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+                tenantId: ${{ secrets.AZURE_TENANT_ID }}
+                contexte: ${{ vars.CONTEXTE }}
+                token: ${{ secrets.TOKEN_GITHUB_API }}
+                ref: main
+
+            - name: Build and push docker image
+              uses: OrchestraKazibao/actions-github/docker-push@main
+              with:
+                azureRegistryName: ${{ vars.AZURE_REGISTRY_NAME }}
+                artifactName: infisical
+                artifactVersion: ${{ steps.extract_version.outputs.version }}
+                workingDirectory: backend
+                numberArtifactToKeep: 10
