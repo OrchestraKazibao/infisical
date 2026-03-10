@@ -9,9 +9,6 @@ on:
                 required: true
                 type: environment
 
-permissions:
-    contents: read
-
 jobs:
     build-and-push-to-acr:
         name: Build and push image to Azure Container Registry
@@ -50,5 +47,5 @@ jobs:
                       ${{ vars.AZURE_REGISTRY_NAME }}/infisical:latest
                       ${{ vars.AZURE_REGISTRY_NAME }}/infisical:${{ steps.commit.outputs.short }}
                       ${{ vars.AZURE_REGISTRY_NAME }}/infisical:${{ steps.extract_version.outputs.version }}
-                  platforms: linux/amd64,linux/arm64
+                  platforms: linux/amd64
                   file: backend/Dockerfile
