@@ -42,8 +42,8 @@ jobs:
 
             - name: Build DockerImage
               shell: bash
-              working-directory: backend
+              working-directory: .
               run: |
-                docker build ${{ inputs.buildArgs}} . -t ${{ vars.AZURE_REGISTRY_NAME }}.azurecr.io/infisical:${{ steps.extract_version.outputs.version }}
+                docker build ${{ inputs.buildArgs}} . -f Dockerfile.standalone-infisical -t ${{ vars.AZURE_REGISTRY_NAME }}.azurecr.io/infisical:${{ steps.extract_version.outputs.version }}
                 az acr run --cmd "acr purge --filter 'infisical:.*' --untagged --ago 1d --keep 10" --registry ${{ vars.AZURE_REGISTRY_NAME }} /dev/null
                 docker push ${{ vars.AZURE_REGISTRY_NAME }}.azurecr.io/infisical:${{ steps.extract_version.outputs.version }}
