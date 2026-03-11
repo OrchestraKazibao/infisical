@@ -103,7 +103,7 @@ export const azureKeyVaultSyncFactory = ({ kmsService, appConnectionDAL }: TAzur
         );
 
         const key = getAzureKeyVaultSecret.id.substring(lastSlashIndex + 1);
-        logger.info(
+        logger.debug(
           {
             syncId,
             operation: "fetch-secret-detail",
@@ -225,7 +225,7 @@ export const azureKeyVaultSyncFactory = ({ kmsService, appConnectionDAL }: TAzur
           value: secretMap[infisicalKey].value
         });
       } else {
-        logger.info(
+        logger.debug(
           {
             syncId: secretSync.id,
             operation: "sync-diff",
