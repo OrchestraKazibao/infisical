@@ -190,8 +190,12 @@ export const azureKeyVaultSyncFactory = ({ kmsService, appConnectionDAL }: TAzur
 
     const deleteSecrets: string[] = [];
 
+    // Track which vault keys are managed by Infisical secrets
+    const managedVaultKeys = new Set<string>();
+
     Object.keys(secretMap).forEach((infisicalKey) => {
       const hyphenatedKey = infisicalKey.replaceAll("_", "-");
+      managedVaultKeys.add(hyphenatedKey);
       if (!(hyphenatedKey in vaultSecrets)) {
         // case: secret has been created
         logger.info(
@@ -239,8 +243,7 @@ export const azureKeyVaultSyncFactory = ({ kmsService, appConnectionDAL }: TAzur
     });
 
     Object.keys(vaultSecrets).forEach((key) => {
-      const underscoredKey = key.replaceAll("-", "_");
-      if (!(underscoredKey in secretMap)) {
+      if (!managedVaultKeys.has(key)) {
         logger.info(
           {
             syncId: secretSync.id,
@@ -540,10 +543,15 @@ export const azureKeyVaultSyncFactory = ({ kmsService, appConnectionDAL }: TAzur
       secretSync.id
     );
 
+    // Build a set of vault keys managed by Infisical secrets
+    const managedVaultKeys = new Set<string>();
+    Object.keys(secretMap).forEach((infisicalKey) => {
+      managedVaultKeys.add(infisicalKey.replaceAll("_", "-"));
+    });
+
     const secretsToRemove = Object.entries(vaultSecrets)
       .filter(([key]) => {
-        const underscoredKey = key.replaceAll("-", "_");
-        return underscoredKey in secretMap && !disabledAzureKeyVaultSecretKeys.includes(underscoredKey);
+        return managedVaultKeys.has(key) && !disabledAzureKeyVaultSecretKeys.includes(key);
       })
       .map(([key]) => key);
 
@@ -648,8 +656,7 @@ export const azureKeyVaultSyncFactory = ({ kmsService, appConnectionDAL }: TAzur
 
     Object.keys(vaultSecrets).forEach((key) => {
       if (!disabledAzureKeyVaultSecretKeys.includes(key)) {
-        const underscoredKey = key.replaceAll("-", "_");
-        secretMap[underscoredKey] = {
+        secretMap[key] = {
           value: vaultSecrets[key].value
         };
       }

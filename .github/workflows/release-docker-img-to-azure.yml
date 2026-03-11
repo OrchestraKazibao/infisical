@@ -28,8 +28,6 @@ jobs:
               id: commit
               uses: pr-mpt/actions-commit-hash@v2
 
-            - name: 🔧 Set up Docker Buildx
-              uses: docker/setup-buildx-action@v2
             - name: Az CLI Login
               uses: Azure/login@v2
               with:
