@@ -656,7 +656,8 @@ export const azureKeyVaultSyncFactory = ({ kmsService, appConnectionDAL }: TAzur
 
     Object.keys(vaultSecrets).forEach((key) => {
       if (!disabledAzureKeyVaultSecretKeys.includes(key)) {
-        secretMap[key] = {
+        const underscoredKey = key.replaceAll("-", "_");
+        secretMap[underscoredKey] = {
           value: vaultSecrets[key].value
         };
       }
