@@ -75,3 +75,5 @@ backend/bdd/.bdd-infisical-bootstrap-result.json
 
 /npm/bin
 __pycache__
+
+logs/
