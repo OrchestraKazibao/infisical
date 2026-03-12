@@ -249,8 +249,7 @@ export const azureKeyVaultSyncFactory = ({ kmsService, appConnectionDAL }: TAzur
             syncId: secretSync.id,
             operation: "sync-diff",
             action: "delete-candidate",
-            secretKey: key,
-            underscoredKey
+            secretKey: key
           },
           "AzureKeyVaultSync: Vault secret not found in Infisical, marked as delete candidate"
         );
